@@ -1,0 +1,57 @@
+version: '3'
+services:
+    nginx:
+        build:
+            context: ./
+            dockerfile: ./nginx/Dockerfile
+        depends_on:
+            - server
+        ports:
+            - 80:80
+        volumes:
+            - ./server/media:/nginx/media
+
+    server:
+        build:
+            context: ./
+            dockerfile: ./server/Dockerfile.prod
+        command: gunicorn config.wsgi -c ./config/gunicorn.py
+        volumes:
+            - ./server/media:/server/media
+        depends_on:
+            - db
+            - rabbitmq
+        environment:
+            DEBUG: 'False'
+            DATABASE_URL: 'postgres://postgres:@db:5432/postgres'
+            BROKER_URL: 'amqp://user:password@rabbitmq:5672/my_vhost'
+
+    db:
+        image: postgres:11.2
+        volumes:
+            - ./pg_data:/var/lib/postgresql/data
+        environment:
+            POSTGRES_DB: postgres
+            POSTGRES_USER: postgres
+
+    rabbitmq:
+        image: rabbitmq:3.7.5
+        environment:
+            RABBITMQ_DEFAULT_USER: 'user'
+            RABBITMQ_DEFAULT_PASS: 'password'
+            RABBITMQ_DEFAULT_VHOST: 'my_vhost'
+
+    celery:
+        build:
+            context: ./
+            dockerfile: ./server/Dockerfile.prod
+        command: celery -A config worker -B -l info -Q default,celery -s /var/run/celerybeat-schedule
+        volumes:
+            - ./server:/server
+        depends_on:
+            - db
+            - rabbitmq
+        environment:
+            DEBUG: 'False'
+            DATABASE_URL: 'postgres://postgres:@db:5432/postgres'
+            BROKER_URL: 'amqp://user:password@rabbitmq:5672/my_vhost'

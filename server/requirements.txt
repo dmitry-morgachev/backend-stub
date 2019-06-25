@@ -1,0 +1,19 @@
+Django==2.2.1
+psycopg2-binary==2.8.2
+
+dj-database-url==0.5.0
+gunicorn==19.9.0
+celery==4.3.0
+
+ipdb==0.11 # отладка программ
+ipython==7.5.0 # приятная работа в shell
+django-debug-toolbar==1.11 # панель для отладки запросов в бд
+
+django-constance==2.4.0 # динамичные переменые
+django-picklefield==2.0 # использование constance через админку
+
+django-admin-sortable2==0.7.1 # удобная сортировка для админки
+django-des==2.4.1 # динамические настройки почты
+Pillow==6.0.0 # для работы с изображениями
+
+git+https://github.com/SibdevPro/django-hash-static.git@1.0.2 # хэширование статики
