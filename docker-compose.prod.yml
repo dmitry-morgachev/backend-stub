@@ -23,11 +23,11 @@ services:
             - rabbitmq
         environment:
             DEBUG: 'False'
-            DATABASE_URL: 'postgres://postgres:@db:5432/postgres'
+            DATABASE_URL: 'postgres://postgres:postgres@db:5432/postgres'
             BROKER_URL: 'amqp://user:password@rabbitmq:5672/my_vhost'
 
     db:
-        image: postgres:11.2
+        image: postgres:12.4-alpine
         volumes:
             - ./pg_data:/var/lib/postgresql/data
         environment:
@@ -35,7 +35,7 @@ services:
             POSTGRES_USER: postgres
 
     rabbitmq:
-        image: rabbitmq:3.7.5
+        image: rabbitmq:3.8.8-alpine
         environment:
             RABBITMQ_DEFAULT_USER: 'user'
             RABBITMQ_DEFAULT_PASS: 'password'
@@ -53,5 +53,5 @@ services:
             - rabbitmq
         environment:
             DEBUG: 'False'
-            DATABASE_URL: 'postgres://postgres:@db:5432/postgres'
+            DATABASE_URL: 'postgres://postgres:postgres@db:5432/postgres'
             BROKER_URL: 'amqp://user:password@rabbitmq:5672/my_vhost'
