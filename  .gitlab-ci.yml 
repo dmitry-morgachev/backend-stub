@@ -1,0 +1,33 @@
+image: docker:19.03.12
+
+services:
+  - docker:19.03.12-dind
+
+before_script:
+  - apk add --update --no-cache git
+  - apk update && apk add bash
+
+stages:
+  - lint
+
+lint:
+  stage: lint
+  image:
+    name: docker/compose:1.27.3
+  script:
+    - docker-compose -f docker-compose.yml build
+    - docker-compose -f docker-compose.yml run server flake8 --version
+    - docker-compose -f docker-compose.yml run server flake8 --config=.flake8 --statistics
+  only:
+    - merge_request
+
+test:
+  stage: test
+  image:
+    name: docker/compose:1.27.3
+  script:
+    - echo $CI_COMMIT_REF_SLUG
+    - docker-compose build
+    - git clone -b develop https://$TEST_REPOSITORY_LOGIN:$TEST_REPOSITORY_PASSWORD@gitlab.com/sibdevstudio/public/hrchat-backend-management.git server/apps/chat/tests/ws_tests/
+    - docker-compose -f docker-compose.yml run --rm server pytest
+  when: manual

@@ -5,9 +5,7 @@ dj-database-url==0.5.0
 gunicorn==20.0.4
 celery==4.4.7
 
-ipdb==0.13.3 # отладка программ
 ipython==7.18.1 # приятная работа в shell
-django-debug-toolbar==2.2 # панель для отладки запросов в бд
 
 django-constance==2.7.0 # динамичные переменые
 django-picklefield==3.0.1 # использование constance через админку
@@ -15,5 +13,7 @@ django-picklefield==3.0.1 # использование constance через ад
 django-admin-sortable2==0.7.7 # удобная сортировка для админки
 django-des==2.4.1 # динамические настройки почты
 Pillow==7.2.0 # для работы с изображениями
+
+pytest-django==3.5.1 # плагин к pytest для тестирование django
 
 git+https://github.com/SibdevPro/django-hash-static.git@1.0.2 # хэширование статики

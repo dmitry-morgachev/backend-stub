@@ -15,7 +15,7 @@ SITE_ID = 1
 # Debug settings (with docker)
 ##################################################################
 
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ##################################################################
 # Databases settings (with docker)
