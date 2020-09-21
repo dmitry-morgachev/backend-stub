@@ -9,6 +9,7 @@ before_script:
 
 stages:
   - lint
+  - test
 
 lint:
   stage: lint
