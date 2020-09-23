@@ -29,4 +29,5 @@ test:
   script:
     - docker-compose build
     - docker-compose run --rm server manage.py test
-  when: manual
+  only:
+    - merge_request
