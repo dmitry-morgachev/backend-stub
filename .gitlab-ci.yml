@@ -28,6 +28,6 @@ test:
     name: docker/compose:1.27.3
   script:
     - docker-compose build
-    - docker-compose run --rm server manage.py test
+    - docker-compose run --rm server python manage.py test --verbosity 2
   only:
     - merge_request
