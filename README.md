@@ -77,3 +77,8 @@ README
 ##### Команды
 
 * `fab deploy` - пересборка и запуск контейнеров nginx и server
+
+### Примечания
+
+* При разработке можно убрать не нужные зависимости из файлов 
+  `/server/requirements/prod.txt` и  `/server/requirements/dev.txt`  
