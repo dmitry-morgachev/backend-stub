@@ -18,4 +18,4 @@ RUN rm -v /etc/nginx/nginx.conf
 ADD ./nginx/nginx.conf /etc/nginx/
 
 RUN mkdir /nginx
-COPY --from=server /server/config/staticfiles /nginx/static
+COPY --from=server /server/staticfiles /nginx/static
