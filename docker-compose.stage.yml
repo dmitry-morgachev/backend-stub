@@ -1,0 +1,58 @@
+version: '3.3'
+services:
+    nginx:
+        restart: always
+        image: $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/nginx:develop-latest
+        depends_on:
+            - server
+        ports:
+            - 80:80
+        volumes:
+            - /data/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/media/:/nginx/media
+
+    server:
+        restart: always
+        image: $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/server:develop-latest
+        command: gunicorn config.wsgi -c ./config/gunicorn.py
+        volumes:
+            - /data/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/media/:/server/media
+        depends_on:
+            - db
+            - rabbitmq
+            - celery
+        environment:
+            DEBUG: 'False'
+            DATABASE_URL: 'postgres://postgres:postgres@db:5432/postgres'
+            BROKER_URL: 'amqp://user:password@rabbitmq:5672/my_vhost'
+        expose:
+            - 8000
+
+    db:
+        image: postgres:12.4-alpine
+        volumes:
+            - ./pg_data:/var/lib/postgresql/data
+        environment:
+            POSTGRES_DB: postgres
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+
+    rabbitmq:
+        image: rabbitmq:3.8.8-alpine
+        environment:
+            RABBITMQ_DEFAULT_USER: 'user'
+            RABBITMQ_DEFAULT_PASS: 'password'
+            RABBITMQ_DEFAULT_VHOST: 'my_vhost'
+
+    celery:
+        restart: always
+        image: $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/server:develop-latest
+        command: celery -A config worker -B -l info -Q default,celery -s /var/run/celerybeat-schedule
+        volumes:
+            - /data/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/media/:/server/media
+        depends_on:
+            - db
+            - rabbitmq
+        environment:
+            DEBUG: 'False'
+            DATABASE_URL: 'postgres://postgres:postgres@db:5432/postgres'
+            BROKER_URL: 'amqp://user:password@rabbitmq:5672/my_vhost'
