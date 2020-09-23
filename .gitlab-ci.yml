@@ -28,5 +28,5 @@ test:
     name: docker/compose:1.27.3
   script:
     - docker-compose build
-    - docker-compose run --rm server pytest
+    - docker-compose run --rm server manage.py test
   when: manual
