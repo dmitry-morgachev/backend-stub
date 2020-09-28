@@ -1,12 +1,9 @@
 echo "copy docker-compose file"
-scp ./docker-compose.yml $1@$2:/data/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/docker-compose.yml;
-
-echo "copy docker-compose file"
 if [[ "$ENV" == "develop" ]]; then
-    echo "SENTRY_DSN=$SENTRY_DSN_DEVELOP" >> .env
- scp $SSH_OPT ./docker-compose.stage.yml $1@$2:/data/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/docker-compose.yaml;
+  echo "SENTRY_DSN=$SENTRY_DSN_DEVELOP" >> .env
+  scp $SSH_OPT ./docker-compose.stage.yml $1@$2:/data/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/docker-compose.yaml;
 elif [[ "$ENV" == "master" ]]; then
-    echo "SENTRY_DSN=$SENTRY_DSN_MASTER" >> .env
+  echo "SENTRY_DSN=$SENTRY_DSN_MASTER" >> .env
   scp $SSH_OPT ./docker-compose.master.yml $1@$2:/data/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/docker-compose.yaml;
 fi
 

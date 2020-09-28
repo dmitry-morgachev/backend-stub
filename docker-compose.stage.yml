@@ -7,6 +7,7 @@ services:
             - server
         ports:
             - 80:80
+            - 443:443
         volumes:
             - /data/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/media/:/nginx/media
 
@@ -19,7 +20,6 @@ services:
         depends_on:
             - db
             - rabbitmq
-            - celery
         environment:
             DEBUG: 'False'
             DATABASE_URL: 'postgres://postgres:postgres@db:5432/postgres'
