@@ -15,7 +15,7 @@ SITE_ID = 1
 # Debug settings (with docker)
 ##################################################################
 
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ##################################################################
 # Databases settings (with docker)
@@ -32,8 +32,8 @@ LOGGING = {
     'disable_existing_loggers': False,
     'filters': {
         'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
     },
     'handlers': {
         'console': {
@@ -48,7 +48,7 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
-    }
+    },
 }
 
 ##################################################################
@@ -58,7 +58,7 @@ LOGGING = {
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [BASE_DIR.joinpath('templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -109,7 +109,7 @@ if not DEBUG:
 ##################################################################
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = BASE_DIR.joinpath('staticfiles')
 STATICFILES_DIRS = ('static',)
 
 STATICFILES_FINDERS = (
@@ -118,7 +118,7 @@ STATICFILES_FINDERS = (
 )
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR.joinpath('media')
 
 FILE_UPLOAD_PERMISSIONS = 0o777
 FILE_UPLOAD_DIRECTORY_PERMISSIONS = 0o777
@@ -128,14 +128,14 @@ FILE_UPLOAD_DIRECTORY_PERMISSIONS = 0o777
 ##################################################################
 
 if DEBUG:
-    from .installed_apps import *
+    from .installed_apps import INSTALLED_APPS
 
     def show_toolbar(request):
         from django.conf import settings
         return settings.DEBUG
 
     DEBUG_TOOLBAR_CONFIG = {
-        "SHOW_TOOLBAR_CALLBACK": show_toolbar,
+        'SHOW_TOOLBAR_CALLBACK': show_toolbar,
     }
-    MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware', ] + MIDDLEWARE
-    INSTALLED_APPS += ['debug_toolbar',]
+    MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware'] + MIDDLEWARE
+    INSTALLED_APPS += ['debug_toolbar']

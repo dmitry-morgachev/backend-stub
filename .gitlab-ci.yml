@@ -1,0 +1,33 @@
+image: docker:19.03.12
+
+services:
+  - docker:19.03.12-dind
+
+before_script:
+  - apk add --update --no-cache git
+  - apk update && apk add bash
+
+stages:
+  - lint
+  - test
+
+lint:
+  stage: lint
+  image:
+    name: docker/compose:1.27.3
+  script:
+    - docker-compose build
+    - docker-compose run server flake8 --version
+    - docker-compose run server flake8 --config=./linters/.flake8 --statistics
+  only:
+    - merge_request
+
+test:
+  stage: test
+  image:
+    name: docker/compose:1.27.3
+  script:
+    - docker-compose build
+    - docker-compose run --rm server python manage.py test --verbosity 2
+  only:
+    - merge_request

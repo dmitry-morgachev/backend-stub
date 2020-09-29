@@ -1,0 +1,9 @@
+[flake8]
+max-line-length=100
+import-order-style=pep8
+application-import-names=apps,config,routing
+max-cognitive-complexity=7
+exclude=__init__.py,
+        manage.py,
+        migrations,
+        fabfile.py,

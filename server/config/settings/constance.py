@@ -3,7 +3,7 @@ CONSTANCE_CONFIG = {
     'NOTIFICATION_FEEDBACK_EMAIL': (
         '',
         'Почтовый ящик для уведомлений с обратной связи',
-        str
+        str,
     ),
 }
 
