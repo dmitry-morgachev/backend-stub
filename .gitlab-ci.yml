@@ -31,7 +31,7 @@ lint:
   script:
     - docker-compose build
     - docker-compose run server flake8 --version
-    - docker-compose run server flake8 --config=.flake8 --statistics
+    - docker-compose run server flake8 --config=./linters/.flake8 --statistics
   only:
     - merge_request
 
