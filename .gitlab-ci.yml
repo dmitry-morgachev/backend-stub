@@ -4,12 +4,25 @@ services:
   - docker:19.03.12-dind
 
 before_script:
-  - apk add --update --no-cache git
-  - apk update && apk add bash
+  - 'which ssh-agent || ( apk add --update --no-cache git openssh-client )'
+  - eval $(ssh-agent -s)
+  - echo "$PRODUCTION_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+  - echo "$DEVELOP_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+
+  - mkdir -p ~/.ssh
+  - chmod 700 ~/.ssh
+
+  - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+  - chmod 644 ~/.ssh/known_hosts
+  - docker version
+  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  - chmod +x ./deploy/deploy.sh
 
 stages:
   - lint
   - test
+  - build
+  - deploy
 
 lint:
   stage: lint
@@ -31,3 +44,40 @@ test:
     - docker-compose run --rm server python manage.py test --verbosity 2
   only:
     - merge_request
+
+build-server:
+  stage: build
+  script:
+    - docker build --pull -t "$CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/server:$CI_COMMIT_REF_SLUG-latest" . -f ./server/Dockerfile.prod
+    - docker push "$CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/server:$CI_COMMIT_REF_SLUG-latest"
+
+  only:
+    - develop
+    - master
+
+build-nginx:
+  stage: build
+  script:
+    - docker build --pull -t "$CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/nginx:$CI_COMMIT_REF_SLUG-latest" . -f ./nginx/Dockerfile
+    - docker push "$CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/nginx:$CI_COMMIT_REF_SLUG-latest"
+  only:
+    - develop
+    - master
+
+deploy-develop:
+  stage: deploy
+  variables:
+    ENV: "develop"
+  script:
+    - ./deploy/dev.sh $DEVELOP_USER $DEVELOP_HOST
+  only:
+    - develop
+
+deploy-master:
+  stage: deploy
+  variables:
+    ENV: "master"
+  script:
+    - ./deploy/prod.sh $PRODUCTION_USER $PRODUCTION_HOST
+  only:
+    - master

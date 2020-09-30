@@ -1,23 +1,22 @@
-version: '3'
+version: '3.3'
 services:
     nginx:
-        build:
-            context: ./
-            dockerfile: ./nginx/Dockerfile
+        restart: always
+        image: $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/nginx:develop-latest
         depends_on:
             - server
         ports:
             - 80:80
+            - 443:443
         volumes:
-            - ./server/media:/nginx/media
+            - /data/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/media/:/nginx/media
 
     server:
-        build:
-            context: ./
-            dockerfile: ./server/Dockerfile.prod
+        restart: always
+        image: $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/server:develop-latest
         command: gunicorn config.wsgi -c ./config/gunicorn.py
         volumes:
-            - ./server/media:/server/media
+            - /data/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/media/:/server/media
         depends_on:
             - db
             - rabbitmq
@@ -25,6 +24,8 @@ services:
             DEBUG: 'False'
             DATABASE_URL: 'postgres://postgres:postgres@db:5432/postgres'
             BROKER_URL: 'amqp://user:password@rabbitmq:5672/my_vhost'
+        expose:
+            - 8000
 
     db:
         image: postgres:12.4-alpine
@@ -33,6 +34,7 @@ services:
         environment:
             POSTGRES_DB: postgres
             POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
 
     rabbitmq:
         image: rabbitmq:3.8.8-alpine
@@ -42,12 +44,11 @@ services:
             RABBITMQ_DEFAULT_VHOST: 'my_vhost'
 
     celery:
-        build:
-            context: ./
-            dockerfile: ./server/Dockerfile.prod
+        restart: always
+        image: $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/server:develop-latest
         command: celery -A config worker -B -l info -Q default,celery -s /var/run/celerybeat-schedule
         volumes:
-            - ./server:/server
+            - /data/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/media/:/server/media
         depends_on:
             - db
             - rabbitmq
