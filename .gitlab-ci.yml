@@ -69,7 +69,7 @@ deploy-develop:
   variables:
     ENV: "develop"
   script:
-    - ./deploy/dev.sh $DEVELOP_USER $DEVELOP_HOST
+    - ./deploy/deploy.sh $DEVELOP_USER $DEVELOP_HOST
   only:
     - develop
 
@@ -78,6 +78,6 @@ deploy-master:
   variables:
     ENV: "master"
   script:
-    - ./deploy/prod.sh $PRODUCTION_USER $PRODUCTION_HOST
+    - ./deploy/deploy.sh $PRODUCTION_USER $PRODUCTION_HOST
   only:
     - master

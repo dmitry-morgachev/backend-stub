@@ -14,7 +14,7 @@ services:
     server:
         restart: always
         image: $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/server:develop-latest
-        command: gunicorn config.wsgi -c ./config/gunicorn.py
+        command: ["./wait-for-postgres.sh", "db", "gunicorn", "config.wsgi -c ./config/gunicorn.py"]
         volumes:
             - /data/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/media/:/server/media
         depends_on:
@@ -35,6 +35,11 @@ services:
             POSTGRES_DB: postgres
             POSTGRES_USER: postgres
             POSTGRES_PASSWORD: postgres
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
 
     rabbitmq:
         image: rabbitmq:3.8.8-alpine
