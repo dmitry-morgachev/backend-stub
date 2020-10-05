@@ -5,6 +5,5 @@ WORKDIR /server
 
 ADD ./server/requirements/prod.txt /server/prod.txt
 ADD ./server/requirements/dev.txt /server/requirements.txt
-ADD ./deploy/wait-for-postgres.sh /server/wait-for-postgres.sh
 
 RUN pip install -r requirements.txt

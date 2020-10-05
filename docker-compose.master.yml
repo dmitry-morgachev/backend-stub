@@ -17,6 +17,7 @@ services:
         command: ["./wait-for-postgres.sh", "db", "gunicorn", "config.wsgi -c ./config/gunicorn.py"]
         volumes:
             - /data/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/media/:/server/media
+            - /data/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/wait-for-postgres.sh:/server/wait-for-postgres.sh
         depends_on:
             - db
             - rabbitmq
