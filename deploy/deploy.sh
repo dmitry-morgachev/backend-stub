@@ -1,3 +1,25 @@
+# $1 - USERNAME
+# $2 - HOST_IP
+
+echo "create .env file"
+set -e
+
+> .env
+echo "VERSION=$CI_PIPELINE_ID" >> .env
+echo "CI_PROJECT_NAMESPACE=$CI_PROJECT_NAMESPACE" >> .env
+echo "CI_PROJECT_NAME=$CI_PROJECT_NAME" >> .env
+echo "CI_REGISTRY=$CI_REGISTRY" >> .env
+
+echo "create project dir"
+ssh $1@$2 mkdir -p /data/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME
+
+echo "login docker registry"
+ssh $1@$2 "docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY"
+
+echo "copy wait-for-postgres file"
+scp $SSH_OPT ./deploy/wait-for-postgres.sh $1@$2:/data/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/wait-for-postgres.sh;
+ssh $1@$2 "chmod +x /data/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/wait-for-postgres.sh"
+
 echo "copy docker-compose file"
 if [[ "$ENV" == "develop" ]]; then
   echo "SENTRY_DSN=$SENTRY_DSN_DEVELOP" >> .env
@@ -16,7 +38,7 @@ ssh $1@$2 "cd /data/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/ && docker-compose pu
 
 
 echo "migrate..."
-ssh $1@$2 "cd /data/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/ && docker-compose run --rm server bash -c \"python manage.py migrate --noinput\""
+ssh $1@$2 "cd /data/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/ && docker-compose run --rm server bash -c \"./wait-for-postgres.sh db python manage.py migrate --noinput\""
 
 
 echo "start services"
