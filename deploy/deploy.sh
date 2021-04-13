@@ -26,7 +26,7 @@ if [[ "$ENV" == "develop" ]]; then
   scp $SSH_OPT ./docker-compose.stage.yml $1@$2:/data/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/docker-compose.yml;
 elif [[ "$ENV" == "master" ]]; then
   echo "SENTRY_DSN=$SENTRY_DSN_MASTER" >> .env
-  scp $SSH_OPT ./docker-compose.master.yml $1@$2:/data/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/docker-compose.yml;
+  scp $SSH_OPT ./docker-compose.prod.yml $1@$2:/data/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/docker-compose.yml;
 fi
 
 echo "copy .env file"

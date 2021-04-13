@@ -2,16 +2,16 @@ Django==3.1.1
 psycopg2-binary==2.8.6
 
 dj-database-url==0.5.0
-gunicorn==20.0.4
-celery==4.4.7
+gunicorn==20.1.0
+celery==5.0.5
 
-ipython==7.18.1 # приятная работа в shell
+ipython==7.22.0 # приятная работа в shell
 
-django-constance==2.7.0 # динамичные переменые
+django-constance==2.8.0 # динамичные переменые
 django-picklefield==3.0.1 # использование constance через админку
 
-django-admin-sortable2==0.7.7 # удобная сортировка для админки
+django-admin-sortable2==0.7.8 # удобная сортировка для админки
 django-des==2.4.1 # динамические настройки почты
-Pillow==7.2.0 # для работы с изображениями
+Pillow==8.2.0 # для работы с изображениями
 
 git+https://github.com/SibdevPro/django-hash-static.git@1.0.2 # хэширование статики

@@ -1,7 +1,4 @@
-image: docker:19.03.12
-
-services:
-  - docker:19.03.12-dind
+image: docker:20.10
 
 before_script:
   - 'which ssh-agent || ( apk add --update --no-cache git openssh-client )'
@@ -50,7 +47,6 @@ build-server:
   script:
     - docker build --pull -t "$CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/server:$CI_COMMIT_REF_SLUG-latest" . -f ./server/Dockerfile.prod
     - docker push "$CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/server:$CI_COMMIT_REF_SLUG-latest"
-
   only:
     - develop
     - master
