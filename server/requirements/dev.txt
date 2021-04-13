@@ -1,19 +1,18 @@
 -r ./prod.txt
 
-ipdb==0.13.3 # отладка программ
-django-debug-toolbar==2.2 # панель для отладки запросов в бд
+django-debug-toolbar==3.2 # панель для отладки запросов в бд
 
 pep8-naming==0.11.1 # check naming for pep8 conventions
-flake8==3.8.3 # linting
+flake8==3.9.0 # linting
 flake8-import-order==0.18.1 # import order
-flake8-blind-except==0.1.1 # restrict exceptions without specifying error type
+flake8-blind-except==0.2.0 # restrict exceptions without specifying error type
 flake8-builtins==1.5.3 # check name collisions with builtins
-flake8-broken-line==0.2.1 # restrict using backslashes to break line
+flake8-broken-line==0.3.0 # restrict using backslashes to break line
 flake8-commas==2.0.0 # enforce using trailing commas
-flake8-eradicate==0.4.0 # restrict commented (dead) code
-flake8-print==3.1.4 # find print statements
+flake8-eradicate==1.0.0 # restrict commented (dead) code
+flake8-print==4.0.0 # find print statements
 flake8-quotes==3.2.0 # enforce using one type of quotes
 flake8-cognitive-complexity==0.1.0 # check cognitive complexity of expressions
-flake8-bugbear==20.1.4 # check for potential bugs
+flake8-bugbear==21.4.3 # check for potential bugs
 
-isort==5.5.2 # linting imports
+isort==5.8.0 # linting imports

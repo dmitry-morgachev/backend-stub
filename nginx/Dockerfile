@@ -1,4 +1,4 @@
-FROM python:3.8.5-slim AS server
+FROM python:3.9.4-slim AS server
 
 RUN mkdir /server && apt-get update && apt-get install -y git
 WORKDIR /server
