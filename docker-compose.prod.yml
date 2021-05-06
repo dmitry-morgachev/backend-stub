@@ -30,6 +30,7 @@ services:
             - 8000
 
     db:
+        restart: always
         image: postgres:12.4-alpine
         volumes:
             - ./pg_data:/var/lib/postgresql/data
@@ -39,6 +40,7 @@ services:
             POSTGRES_PASSWORD: postgres
 
     rabbitmq:
+        restart: always
         image: rabbitmq:3.8.8-alpine
         environment:
             RABBITMQ_DEFAULT_USER: 'user'
