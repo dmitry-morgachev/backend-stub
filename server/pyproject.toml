@@ -18,6 +18,9 @@ django-admin-sortable2 = "1.0"
 django-des = "2.4.1"
 Pillow = "8.2.0"
 django-hash-static = {git = "https://github.com/SibdevPro/django-hash-static.git", rev = "1.0.2"}
+django-cors-headers = "3.7.0"
+djangorestframework = "3.12.4"
+djangorestframework-simplejwt = "4.6.0"
 
 [tool.poetry.dev-dependencies]
 django-debug-toolbar = "3.2"

@@ -23,9 +23,11 @@ ssh $1@$2 "chmod +x /data/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/wait-for-postgr
 echo "copy docker-compose file"
 if [[ "$ENV" == "develop" ]]; then
   echo "SENTRY_DSN=$SENTRY_DSN_DEVELOP" >> .env
+  echo "CORS_ALLOWED_ORIGINS=$DEVELOP_CORS_ALLOWED_ORIGINS"
   scp $SSH_OPT ./docker-compose.stage.yml $1@$2:/data/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/docker-compose.yml;
 elif [[ "$ENV" == "master" ]]; then
   echo "SENTRY_DSN=$SENTRY_DSN_MASTER" >> .env
+  echo "CORS_ALLOWED_ORIGINS=$PRODUCTION_CORS_ALLOWED_ORIGINS"
   scp $SSH_OPT ./docker-compose.prod.yml $1@$2:/data/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/docker-compose.yml;
 fi
 

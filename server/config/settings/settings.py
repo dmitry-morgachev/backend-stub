@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from pathlib import Path
 
 import dj_database_url
@@ -76,6 +77,7 @@ TEMPLATES = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -122,6 +124,39 @@ MEDIA_ROOT = BASE_DIR.joinpath('media')
 
 FILE_UPLOAD_PERMISSIONS = 0o777
 FILE_UPLOAD_DIRECTORY_PERMISSIONS = 0o777
+
+##################################################################
+# REST FRAMEWORK
+##################################################################
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ]
+}
+
+SIMPLE_JWT = {
+    'ROTATE_REFRESH_TOKENS': True,
+    'ACCESS_TOKEN_LIFETIME': timedelta(
+        minutes=int(os.environ.get('JWT_ACCESS_TOKEN_LIFETIME', 600)),
+    ),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
+
+##################################################################
+# CORS settings
+##################################################################
+
+if cors_origins := os.environ.get('CORS_ALLOWED_ORIGINS'):
+    CORS_ALLOWED_ORIGINS = [
+        origin.strip() for origin in cors_origins.split(',')
+    ]
+else:
+    CORS_ALLOWED_ORIGINS = []
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r'^http://localhost(:[0-9]+)?',
+]
 
 ##################################################################
 # Debug toolbar settings
