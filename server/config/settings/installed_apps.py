@@ -11,6 +11,8 @@ INSTALLED_APPS = [
     'constance.backends.database',
     'des',
     'adminsortable2',
+    'rest_framework',
+    'corsheaders',
 ]
 
 LOCAL_APPS = []

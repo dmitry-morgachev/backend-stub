@@ -17,6 +17,7 @@ services:
           DEBUG: 'True'
           DATABASE_URL: 'postgres://postgres:postgres@db:5432/postgres'
           BROKER_URL: 'amqp://user:password@rabbitmq:5672/my_vhost'
+          CORS_ALLOWED_ORIGINS: ''
 
     db:
         image: postgres:12.4-alpine
