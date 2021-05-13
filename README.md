@@ -80,5 +80,6 @@ README
 
 ### Примечания
 
-* При разработке можно убрать ненужные зависимости из файлов 
-  `/server/requirements/prod.txt` и  `/server/requirements/dev.txt`  
+* При разработке можно убрать ненужные зависимости
+    
+    `docker-compose run server poetry remove req_name`
