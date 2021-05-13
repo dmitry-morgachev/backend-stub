@@ -3,10 +3,12 @@ FROM python:3.9.4-slim AS server
 RUN mkdir /server && apt-get update && apt-get install -y git
 WORKDIR /server
 
-ADD ./server/requirements/prod.txt /server/requirements.txt
-RUN pip install -r requirements.txt
+COPY ./server/pyproject.toml /server/
+COPY ./server/poetry.lock /server/
 
-ADD ./server /server
+RUN pip install poetry && poetry config virtualenvs.create false && poetry install --no-dev
+
+COPY ./server /server
 
 RUN python ./manage.py collectstatic --noinput
 

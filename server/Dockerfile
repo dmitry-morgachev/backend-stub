@@ -3,7 +3,9 @@ FROM python:3.9.4-slim
 RUN mkdir /server && apt-get update && apt-get install -y git libpq-dev postgresql-client
 WORKDIR /server
 
-ADD ./server/requirements/prod.txt /server/prod.txt
-ADD ./server/requirements/dev.txt /server/requirements.txt
+COPY ./server/pyproject.toml /server/
+COPY ./server/poetry.lock /server/
 
-RUN pip install -r requirements.txt
+RUN pip install poetry && poetry config virtualenvs.create false && poetry install
+
+COPY ./server /server
