@@ -132,7 +132,7 @@ FILE_UPLOAD_DIRECTORY_PERMISSIONS = 0o777
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ]
+    ],
 }
 
 SIMPLE_JWT = {
