@@ -3,7 +3,7 @@ psycopg2-binary==2.8.2
 
 dj-database-url==0.5.0
 gunicorn==19.9.0
-celery==4.3.0
+celery==5.2.2
 
 ipdb==0.11 # отладка программ
 ipython==7.5.0 # приятная работа в shell
