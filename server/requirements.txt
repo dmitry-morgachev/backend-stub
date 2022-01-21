@@ -6,7 +6,7 @@ gunicorn==19.9.0
 celery==4.3.0
 
 ipdb==0.11 # отладка программ
-ipython==7.5.0 # приятная работа в shell
+ipython==7.16.3 # приятная работа в shell
 django-debug-toolbar==1.11 # панель для отладки запросов в бд
 
 django-constance==2.4.0 # динамичные переменые
