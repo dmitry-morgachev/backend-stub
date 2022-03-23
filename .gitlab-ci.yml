@@ -1,20 +1,13 @@
 image: docker:20.10
 
+
 before_script:
   - 'which ssh-agent || ( apk add --update --no-cache git openssh-client )'
   - eval $(ssh-agent -s)
-  - echo "$PRODUCTION_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-  - echo "$DEVELOP_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-
   - mkdir -p ~/.ssh
   - chmod 700 ~/.ssh
-
-  - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-  - chmod 644 ~/.ssh/known_hosts
-  - docker version
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   - docker login -u "$DOCKER_USER" -p "$DOCKER_PASSWORD"
-  - chmod +x ./deploy/deploy.sh
 
 stages:
   - lint
@@ -30,6 +23,8 @@ lint:
     - docker-compose build
     - docker-compose run server flake8 --version
     - docker-compose run server flake8 --config=./linters/.flake8 --statistics
+  after_script:
+    - docker-compose down
   only:
     - merge_request
 
@@ -40,6 +35,8 @@ test:
   script:
     - docker-compose build
     - docker-compose run --rm server python manage.py test --verbosity 2
+  after_script:
+    - docker-compose down
   only:
     - merge_request
 
@@ -49,6 +46,8 @@ build-server:
   script:
     - docker build --pull -t "$CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/server:$CI_COMMIT_REF_SLUG-latest" . -f ./server/Dockerfile.prod
     - docker push "$CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/server:$CI_COMMIT_REF_SLUG-latest"
+  after_script:
+    - docker image rm "$CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/server:$CI_COMMIT_REF_SLUG-latest"
   only:
     - develop
     - master
@@ -59,6 +58,8 @@ build-nginx:
   script:
     - docker build --pull -t "$CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/nginx:$CI_COMMIT_REF_SLUG-latest" . -f ./nginx/Dockerfile
     - docker push "$CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/nginx:$CI_COMMIT_REF_SLUG-latest"
+  after_script:
+    - docker image rm "$CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/nginx:$CI_COMMIT_REF_SLUG-latest"
   only:
     - develop
     - master
@@ -66,19 +67,23 @@ build-nginx:
 deploy-develop:
   stage: deploy
   when: manual
-  variables:
-    ENV: "develop"
+  before_script:
+    - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+    - echo "$DEVELOP_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - chmod +x ./deploy/deploy_develop.sh
   script:
-    - ./deploy/deploy.sh $DEVELOP_USER $DEVELOP_HOST
+    - ./deploy/deploy_develop.sh $DEVELOP_USER $DEVELOP_HOST
   only:
     - develop
 
 deploy-master:
   stage: deploy
   when: manual
-  variables:
-    ENV: "master"
+  before_script:
+    - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+    - echo "$MASTER_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - chmod +x ./deploy/deploy_master.sh
   script:
-    - ./deploy/deploy.sh $PRODUCTION_USER $PRODUCTION_HOST
+    - ./deploy/deploy_master.sh $PRODUCTION_USER $PRODUCTION_HOST
   only:
     - master
