@@ -45,5 +45,5 @@ services:
             - rabbitmq
         environment:
             DEBUG: 'True'
-            DATABASE_URL: 'postgres://postgres:@db:5432/postgres'
+            DATABASE_URL: 'postgres://postgres:postgres@db:5432/postgres'
             BROKER_URL: 'amqp://user:password@rabbitmq:5672/my_vhost'
